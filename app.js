@@ -189,7 +189,7 @@ function updateSummary() {
   const currentYear = now.getFullYear();
 
   // 更新標題為當月
-  transactionListTitle.textContent = `${currentMonth + 1}月收支`;
+  transactionListTitle.textContent = `${currentMonth + 1}月點數紀錄`;
 
   const monthlyTransactions = transactions.filter((txn) => {
     const txnDate = new Date(txn.date);
@@ -216,8 +216,8 @@ function updateSummary() {
   const percent =
     budgetAmount > 0 ? Math.round((remaining / budgetAmount) * 100) : 0;
 
-  budgetRemaining.textContent = `$${remaining.toLocaleString()}`;
-  totalBudget.textContent = `$${budgetAmount.toLocaleString()}`;
+  budgetRemaining.textContent = `${remaining.toLocaleString()}`;
+  totalBudget.textContent = `${budgetAmount.toLocaleString()}`;
   budgetPercent.textContent = `${percent}%`;
 
   // Progress Bar
@@ -239,9 +239,9 @@ function updateSummary() {
 // 設定預算彈窗
 async function openBudgetModal() {
   const { value: amount } = await Swal.fire({
-    title: "設定每月總預算",
+    title: "設定每月總點數",
     input: "number",
-    inputLabel: "請輸入金額",
+    inputLabel: "請輸入點數",
     inputValue: budget.amount,
     showCancelButton: true,
     confirmButtonText: "儲存",
@@ -249,7 +249,7 @@ async function openBudgetModal() {
     confirmButtonColor: "#5abf98",
     inputValidator: (value) => {
       if (!value || Number(value) < 0) {
-        return "請輸入有效的金額！";
+        return "請輸入有效的點數！";
       }
     },
   });
@@ -257,7 +257,7 @@ async function openBudgetModal() {
   if (amount) {
     Swal.fire({
       title: "儲存中...",
-      text: "正在更新預算",
+      text: "正在更新點數",
       allowOutsideClick: false,
       allowEscapeKey: false,
       didOpen: () => {
@@ -271,7 +271,7 @@ async function openBudgetModal() {
         body: JSON.stringify({ amount }),
       });
       await loadBudget();
-      Swal.fire("成功", "預算已更新！", "success");
+      Swal.fire("成功", "點數已更新！", "success");
     } catch (error) {
       Swal.fire("失敗", error.message, "error");
     }
@@ -302,14 +302,14 @@ async function openAddTransactionModal() {
           </select>
         </div>
         <div class="form-group">
-          <label>金額</label>
-          <input type="number" id="swal-amount" class="swal2-input" placeholder="多少錢？" min="1" required>
+          <label>點數</label>
+          <input type="number" id="swal-amount" class="swal2-input" placeholder="多少點？" min="1" required>
         </div>
         <div class="form-group">
           <label>收支</label>
           <select id="swal-type" class="swal2-select">
-            <option value="expense">支出</option>
-            <option value="income">收入</option>
+            <option value="expense">扣點</option>
+            <option value="income">加點</option>
           </select>
         </div>
         <div class="form-group">
@@ -320,7 +320,7 @@ async function openAddTransactionModal() {
     `,
     focusConfirm: false,
     showCancelButton: true,
-    confirmButtonText: "記帳！",
+    confirmButtonText: "紀錄點數！",
     cancelButtonText: "算了",
     confirmButtonColor: "#5abf98",
     preConfirm: () => {
@@ -336,12 +336,12 @@ async function openAddTransactionModal() {
 
   if (formValues) {
     if (!formValues.amount)
-      return Swal.fire("哎呀！", "金額沒填喔！", "warning");
+      return Swal.fire("哎呀！", "點數沒填喔！", "warning");
 
     // 顯示 loading
     Swal.fire({
       title: "處理中...",
-      text: "正在儲存記帳資料",
+      text: "正在儲存點數資料",
       allowOutsideClick: false,
       allowEscapeKey: false,
       didOpen: () => {
@@ -351,7 +351,7 @@ async function openAddTransactionModal() {
 
     try {
       await createTransaction(formValues);
-      Swal.fire("成功！", "記帳完成！", "success");
+      Swal.fire("成功！", "點數紀錄完成！", "success");
     } catch (error) {
       Swal.fire("失敗", error.message, "error");
     }
@@ -520,7 +520,7 @@ window.editTransaction = async function (id) {
     .join("");
 
   const { value: formValues } = await Swal.fire({
-    title: "編輯記帳",
+    title: "編輯點數",
     html: `
       <form id="swal-txn-form" class="swal-form">
         <div class="form-group">
@@ -536,8 +536,8 @@ window.editTransaction = async function (id) {
           </select>
         </div>
         <div class="form-group">
-          <label>金額</label>
-          <input type="number" id="swal-amount" class="swal2-input" placeholder="多少錢？" min="1" value="${
+          <label>點數</label>
+          <input type="number" id="swal-amount" class="swal2-input" placeholder="多少點？" min="1" value="${
             txn.amount
           }" required>
         </div>
@@ -578,7 +578,7 @@ window.editTransaction = async function (id) {
 
   if (formValues) {
     if (!formValues.amount)
-      return Swal.fire("哎呀！", "金額沒填喔！", "warning");
+      return Swal.fire("哎呀！", "點數沒填喔！", "warning");
 
     // 顯示 loading
     Swal.fire({
@@ -600,7 +600,7 @@ window.editTransaction = async function (id) {
         }),
       });
       await loadTransactions();
-      Swal.fire("成功！", "記帳已更新！", "success");
+      Swal.fire("成功！", "點數已更新！", "success");
     } catch (error) {
       Swal.fire("失敗", error.message, "error");
     }
